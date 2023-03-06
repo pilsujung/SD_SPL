@@ -10,6 +10,9 @@ from time import sleep
 
 
 class Tello8889Sensor(Sensor):
+    """
+    Tello 8889 port로 명령을 수신하는 클래스
+    """
     
     #=====Tello8889Sensor의 인스턴스를 생성시 실행될 함수=====
     def __init__(self, main):
