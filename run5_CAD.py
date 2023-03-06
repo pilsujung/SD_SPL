@@ -2,7 +2,7 @@
 import threading
 import sys
 import socket
-from CAD.Plan.Planner3 import Planner
+from CAD.Plan.Planner import Planner
 from CAD.Tello.Tello8889Sensor import Tello8889Sensor
 from CAD.Tello.Tello11111Sensor import Tello11111Sensor
 from CAD.Tello.Tello8889Actor import Tello8889Actor
@@ -37,13 +37,13 @@ from CAD.Test.TelloVirtualController import TelloVirtualController
 class Main:
     
     def __init__(self):
-        print("********************CAD MODE: 장애물을 인지하고 회피기동을 합니다********************")
         print(">>> 프로그램 준비중...")
         #종료를 위한 stop_event
         self.stop_event = threading.Event()
         
         #Tello의 주소, 포트
         self.tello_address = ('192.168.10.1',8889) #텔로에게 접속했을 때, 텔로의 IP주소
+        # self.tello_address = ('192.168.137.198',8889) #텔로에게 접속했을 때, 텔로의 IP주소
         
         #비행상태 확인을 위한 변수
         self.is_takeoff = False
@@ -67,6 +67,8 @@ class Main:
         
         self.socket11111 = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  # IPv4, UDP 통신 소켓 객체를 생성(camera용)
         self.socket11111.bind(('', 11111)) #소켓 객체를 텔로와 바인딩(11111 포트)
+        
+        # self.socket8889.sendto("downvision 1".encode('utf-8'), self.tello_address)
         
         print("드론 연결 완료")
         
