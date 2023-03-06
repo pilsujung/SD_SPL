@@ -3,8 +3,6 @@ import threading
 import sys
 import traceback
 from time import sleep
-from CAD.Calculation import ValueChanger
-from numpy import *
 
 
 

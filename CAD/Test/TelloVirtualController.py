@@ -28,7 +28,6 @@ class TelloVirtualController:
         self.__printc("생성")
         
         #Planner
-        self.__main = main
         self.__socket8889 = main.socket8889
         self.__tello_address = main.tello_address
         self.__planner = main.planner
@@ -92,11 +91,12 @@ class TelloVirtualController:
         self.__keyboard_connection.focus_set()
 
         #실행될 스레드 선언
-        if hasattr(self.__main, 'get_info_8889Sensor_tof'):
+        if hasattr(self.__planner, 'get_info_8889Sensor_tof'):
+            print("실행???")
             self.__thread_update_tof = threading.Thread(target=self.__func_update_tof, daemon=True)
             self.__thread_update_tof.start()
 
-        if hasattr(self.__main, 'get_info_11111Sensor_fram'):
+        if hasattr(self.__planner, 'get_info_11111Sensor_frame'):
             self.__thread_print_video = threading.Thread(target=self.__func_print_video, daemon=True)
             self.__thread_print_video.start()
     

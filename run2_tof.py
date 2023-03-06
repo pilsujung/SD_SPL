@@ -2,9 +2,8 @@
 import threading
 import sys
 import socket
-from CAD.Plan.Planner import Planner
+from CAD.Plan.Planner2 import Planner
 from CAD.Tello.Tello8889Sensor import Tello8889Sensor
-from CAD.Tello.Tello11111Sensor import Tello11111Sensor
 from CAD.Tello.Tello8889Actor import Tello8889Actor
 from CAD.Test.TelloVirtualController import TelloVirtualController
 
@@ -44,7 +43,6 @@ class Main:
         
         #Tello의 주소, 포트
         self.tello_address = ('192.168.10.1',8889) #텔로에게 접속했을 때, 텔로의 IP주소
-        # self.tello_address = ('192.168.137.198',8889) #텔로에게 접속했을 때, 텔로의 IP주소
         
         #비행상태 확인을 위한 변수
         self.is_takeoff = False
@@ -58,18 +56,9 @@ class Main:
         response,addr= self.socket8889.recvfrom(1024)
         print("8889 port connect: {} ({})".format(response,addr))
         
-        self.socket8889.sendto("streamon".encode('utf-8'), self.tello_address)
-        response,addr = self.socket8889.recvfrom(1024)
-        print("video stream on: {} ({})".format(response,addr))
-        
         self.socket8889.sendto("motoron".encode('utf-8'), self.tello_address)
         response,addr = self.socket8889.recvfrom(1024)
         print("motor on: {} ({})".format(response,addr))
-        
-        self.socket11111 = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  # IPv4, UDP 통신 소켓 객체를 생성(camera용)
-        self.socket11111.bind(('', 11111)) #소켓 객체를 텔로와 바인딩(11111 포트)
-        
-        # self.socket8889.sendto("downvision 1".encode('utf-8'), self.tello_address)
         
         print("드론 연결 완료")
         
@@ -77,7 +66,6 @@ class Main:
         self.planner = Planner(self)
         
         self.tello8889sensor = Tello8889Sensor(self)
-        self.tello11111sensor = Tello11111Sensor(self)
         self.tello8889actor = Tello8889Actor(self)
         
         self.virtual_controller = TelloVirtualController(self)
@@ -90,9 +78,9 @@ class Main:
 
 if __name__ == "__main__":
     version = sys.version.split(".")
-    if version[0] == "3" and version[1] == "9":
+    if version[0] == "3":
         Main()
     else:
-        print(">>>파이썬 3.9만 지원됩니다.")
+        print(">>>파이썬 3만 지원됩니다.")
         print(">>>현재 버젼: {}".format(sys.version))
     print(">>> 프로그램 종료")
