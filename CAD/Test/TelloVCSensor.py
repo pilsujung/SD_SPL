@@ -1,4 +1,3 @@
-#완성
 from CAD.Basemodel.Sensor import Sensor
 import threading
 import sys

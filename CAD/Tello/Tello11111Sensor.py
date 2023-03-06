@@ -1,4 +1,3 @@
-#완성
 import sys
 from CAD.Basemodel.Sensor import Sensor
 from CAD.Decoder import H264decoder

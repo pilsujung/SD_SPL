@@ -1,12 +1,9 @@
-#완성
 import sys
 import tkinter
 import threading
 from PIL import ImageTk
 from time import sleep
 import traceback
-import numpy as np
-from PIL import Image,ImageTk
 
 
 
@@ -42,9 +39,6 @@ class TelloVirtualController:
         
         #화면, tof를 갱신할 시간
         self.__renewal_tof_time = 0.3
-
-        #queue에 동시접근을 방지하기 위한 lock
-        self.__lock = threading.Lock()
 
         #화면 기본 설정
         self.root = tkinter.Tk()  # GUI 화면 객체 생성
@@ -231,14 +225,6 @@ class TelloVirtualController:
             print(traceback.format_exc())
         # self.__lock.release() #락 해제
 
-    # def insert_controller_queue(self,cmd):
-    #     self.__controller_queue.append(cmd)
-    
-    # def pop_controller_queue(self):
-    #     data = None
-    #     if len(self.__controller_queue)>0:
-    #         data = self.__controller_queue.pop(0)
-    #     return data
     def insert_controller_queue(self,cmd):
         self.__planner.insert_cmd_queue(cmd)
     

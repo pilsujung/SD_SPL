@@ -1,4 +1,3 @@
-#완성
 from CAD.Basemodel.Actor import Actor
 from CAD.Calculation import ValueChanger
 from time import sleep

@@ -1,12 +1,9 @@
-#완성
 import threading
 import sys
 import traceback
 from time import sleep
-from CAD.Calculation import ValueChanger
 from CAD.ObjectDetector.YOLOv5 import YOLOv5
 from numpy import *
-import cv2
 
 
 
@@ -51,7 +48,7 @@ class Planner:
         self.__info_11111Sensor_image = None
         
         #객체감지를 위한 YOLOv5 객체
-        self.__YOLOv5 = YOLOv5(self) 
+        self.__YOLOv5 = YOLOv5()
         
         #스레드 실행
         self.__thr_planner = threading.Thread(target=self.__func_planner, daemon=True)
@@ -125,7 +122,7 @@ class Planner:
         
         if frame is not None and frame.size != 0:     
             #YOLO에 frame을 전달하여, 객체인식이 적용된 이미지를 전달받음
-            image, object_coor = self.__YOLOv5.detect_from_frame(frame, None)
+            image, _ = self.__YOLOv5.detect_from_frame(frame, None)
             
             #전달받은 값들을 저장
             self.set_info_11111Sensor_image(image)

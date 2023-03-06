@@ -1,4 +1,3 @@
-#완성
 from CAD.Basemodel.Sensor import Sensor
 from CAD.Calculation import ValueChecker
 from CAD.Calculation import ValueChanger

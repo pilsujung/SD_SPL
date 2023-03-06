@@ -1,11 +1,9 @@
-#완성
 from CAD.Basemodel.ObjectDetector import ObjectDetector
 from CAD.Calculation import ValueChanger
 import torch
 import numpy as np
 from PIL import Image,ImageTk
 import cv2
-from time import time
 
 
 
@@ -16,10 +14,7 @@ class YOLOv5(ObjectDetector):
     
     
     
-    def __init__(self, planner):
-        
-        #planner 객체
-        self.__planner = planner
+    def __init__(self):
         
         #모델 객체 생성
         #local에서 YOLO 사용: https://stackoverflow.com/questions/71251177/how-to-use-yolov5-api-with-flask-offline

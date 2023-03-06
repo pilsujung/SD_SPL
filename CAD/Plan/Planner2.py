@@ -3,7 +3,6 @@ import threading
 import sys
 import traceback
 from time import sleep
-from CAD.Calculation import ValueChanger
 from numpy import *
 
 
@@ -30,11 +29,7 @@ class Planner:
         self.socket8889 = main.socket8889
         self.tello_address = main.tello_address
         
-        
         self.threshold_distance = 60
-        
-        #종료를 위한 virtual controller 접근
-        self.__main = main  
         
         #기본적으로 움직일 크기(cm)
         self.base_move_distance = 60

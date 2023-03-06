@@ -1,9 +1,7 @@
-#완성
 import threading
 import sys
 import traceback
 from time import sleep
-from CAD.Calculation import ValueChanger
 from PIL import Image,ImageTk
 from numpy import *
 
@@ -44,7 +42,6 @@ class Planner:
         
         #각 센서가 저장하는 값
         self.__cmd_queue = [] #명령을 저장할 큐
-        self.__info_8889Sensor_tof = None #ToF
         self.__info_8889Sensor_cmd = None #수행확인명령
         self.__info_11111Sensor_frame = None #Frame
         self.__info_11111Sensor_image = None
@@ -96,7 +93,6 @@ class Planner:
         Tello는 15초 이상 전달받은 명령이 없을시 자동 착륙하기 때문에,
         이를 방지하기 위해 5초 간격으로 Tello에게 "command" 명령을 전송
         """
-        cnt = 0
         try:
             while not self.__stop_event.is_set():
                 self.socket8889.sendto("command".encode(),self.tello_address)

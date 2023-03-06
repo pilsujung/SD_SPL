@@ -1,4 +1,3 @@
-#완성
 from abc import *
 import numpy as np
 
