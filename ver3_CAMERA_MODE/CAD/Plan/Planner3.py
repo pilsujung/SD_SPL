@@ -22,7 +22,7 @@ class Planner:
         self.__printc("생성")
         
         #종료를 위한 stop_event
-        self.__stop_event = main.stop_event
+        self.stop_event = main.stop_event
         
         #8889 소켓 & Tello address
         self.socket8889 = main.socket8889
@@ -61,13 +61,13 @@ class Planner:
         self.__printf("실행",sys._getframe().f_code.co_name)
         
         try:
-            while not self.__stop_event.is_set() and not hasattr(self.__main, 'virtual_controller'):
+            while not self.stop_event.is_set() and not hasattr(self.__main, 'virtual_controller'):
                 self.__printf("대기중",sys._getframe().f_code.co_name)
                 sleep(1)
                 
             self.__virtual_controller = self.__main.virtual_controller
                 
-            while not self.__stop_event.is_set():
+            while not self.stop_event.is_set():
                 self.__draw_image() #좌표받아오기
 
 
@@ -94,7 +94,7 @@ class Planner:
         이를 방지하기 위해 5초 간격으로 Tello에게 "command" 명령을 전송
         """
         try:
-            while not self.__stop_event.is_set():
+            while not self.stop_event.is_set():
                 self.socket8889.sendto("command".encode(),self.tello_address)
                 sleep(5)
 

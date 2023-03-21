@@ -3,7 +3,6 @@ import threading
 import sys
 import traceback
 from time import sleep
-from numpy import *
 
 
 
@@ -23,7 +22,7 @@ class Planner:
         self.__printc("생성")
         
         #종료를 위한 stop_event
-        self.__stop_event = main.stop_event
+        self.stop_event = main.stop_event
         
         #8889 소켓 & Tello address
         self.socket8889 = main.socket8889
@@ -61,7 +60,7 @@ class Planner:
         이를 방지하기 위해 5초 간격으로 Tello에게 "command" 명령을 전송
         """
         try:
-            while not self.__stop_event.is_set():
+            while not self.stop_event.is_set():
                 self.socket8889.sendto("command".encode(),self.tello_address)
                 sleep(5)
 
@@ -85,7 +84,7 @@ class Planner:
         Tello에게 0.2초 주기로 tof값 전송을 요청하는 스레드
         """
         try:
-            while not self.__stop_event.is_set():
+            while not self.stop_event.is_set():
                 self.socket8889.sendto("EXT tof?".encode(),self.tello_address)
                 sleep(0.2)
 

@@ -91,7 +91,6 @@ class Tello8889Sensor(Sensor):
 
 
     
-    
     #=====실행내역 출력을 위한 함수=====
     #클래스명을 포함하여 출력하는 함수
     def __printc(self,msg:str):

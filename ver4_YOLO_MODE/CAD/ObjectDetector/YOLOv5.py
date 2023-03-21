@@ -15,7 +15,7 @@ class YOLOv5(ObjectDetector):
     
     
     def __init__(self):
-        
+
         #모델 객체 생성
         #local에서 YOLO 사용: https://stackoverflow.com/questions/71251177/how-to-use-yolov5-api-with-flask-offline
         self.__model = torch.hub.load(r'CAD/ObjectDetector/yolov5', 'custom', path=r'CAD/ObjectDetector/yolov5s.pt', source='local')
@@ -77,7 +77,10 @@ class YOLOv5(ObjectDetector):
         image = Image.fromarray(frame)
         
         #image를 imagetk 형식으로 변환
-        image = ImageTk.PhotoImage(image)
+        try:
+            image = ImageTk.PhotoImage(image)
+        except:
+            image = "TEST"
         
         if fusion_window_coor is None and tof and tof < 50:
             #안전거리 내이면, 스크린 크기의 장애물로 지정

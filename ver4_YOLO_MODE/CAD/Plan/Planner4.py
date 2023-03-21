@@ -23,7 +23,7 @@ class Planner:
         self.__printc("생성")
         
         #종료를 위한 stop_event
-        self.__stop_event = main.stop_event
+        self.stop_event = main.stop_event
         
         #8889 소켓 & Tello address
         self.socket8889 = main.socket8889
@@ -48,7 +48,10 @@ class Planner:
         self.__info_11111Sensor_image = None
         
         #객체감지를 위한 YOLOv5 객체
-        self.__YOLOv5 = YOLOv5()
+        if not hasattr(self.__main, "test"):
+            self.__YOLOv5 = YOLOv5()
+        else:
+            self.__YOLOv5 = "TEST"
         
         #스레드 실행
         self.__thr_planner = threading.Thread(target=self.__func_planner, daemon=True)
@@ -65,13 +68,13 @@ class Planner:
         self.__printf("실행",sys._getframe().f_code.co_name)
         
         try:
-            while not self.__stop_event.is_set() and not hasattr(self.__main, 'virtual_controller'):
+            while not self.stop_event.is_set() and not hasattr(self.__main, 'virtual_controller'):
                 self.__printf("대기중",sys._getframe().f_code.co_name)
                 sleep(1)
                 
             self.__virtual_controller = self.__main.virtual_controller
                 
-            while not self.__stop_event.is_set():
+            while not self.stop_event.is_set():
                 #frame 정보가 존재하면, frame에 대해 장애물 윈도우를 그리기
                 self.__redraw_frame() #좌표받아오기
 
@@ -98,7 +101,7 @@ class Planner:
         이를 방지하기 위해 5초 간격으로 Tello에게 "command" 명령을 전송
         """
         try:
-            while not self.__stop_event.is_set():
+            while not self.stop_event.is_set():
                 self.socket8889.sendto("command".encode(),self.tello_address)
                 sleep(5)
 
@@ -120,7 +123,7 @@ class Planner:
     def __redraw_frame(self):
         frame = self.get_info_11111Sensor_frame()
         
-        if frame is not None and frame.size != 0:     
+        if frame is not None and type(frame)!= str and frame.size != 0:     
             #YOLO에 frame을 전달하여, 객체인식이 적용된 이미지를 전달받음
             image, _ = self.__YOLOv5.detect_from_frame(frame, None)
             

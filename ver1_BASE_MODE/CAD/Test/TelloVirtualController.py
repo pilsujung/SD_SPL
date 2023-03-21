@@ -45,7 +45,7 @@ class TelloVirtualController:
         self.root.geometry("-10+0")
         # self.root.attributes('-fullscreen',True)
         self.root.wm_title("CAD TEST for RMTT") #GUI 화면의 title 설정  
-        self.root.wm_protocol("WM_DELETE_WINDOW", self.__onClose) #종료버튼을 클릭시 실행할 함수 설정
+        self.root.wm_protocol("WM_DELETE_WINDOW", self.onClose) #종료버튼을 클릭시 실행할 함수 설정
 
         #화면에 띄울 문구 설정
         self.__text_tof = tkinter.Label(self.root, text= "ToF: None", font='Helvetica 10 bold') ##re
@@ -63,114 +63,113 @@ class TelloVirtualController:
         self.__panel_image = None
 
         #착륙 버튼
-        self.__btn_landing = tkinter.Button(self.root, text="Land", relief="raised", command=self.__land)
+        self.__btn_landing = tkinter.Button(self.root, text="Land", relief="raised", command=self.land)
         self.__btn_landing.pack(side="bottom", fill="both", expand="yes", padx=10, pady=5)
 
         #이륙 버튼
-        self.__btn_takeoff = tkinter.Button(self.root, text="Takeoff", relief="raised", command=self.__takeoff)
+        self.__btn_takeoff = tkinter.Button(self.root, text="Takeoff", relief="raised", command=self.takeoff)
         self.__btn_takeoff.pack(side="bottom", fill="both", expand="yes", padx=10, pady=5)
 
         #키보드 버튼들과 Tello 동작을 바인딩
         self.__keyboard_connection = tkinter.Frame(self.root, width=100, height=2)
-        self.__keyboard_connection.bind('<KeyPress-q>', self.__on_keypress_q)
-        self.__keyboard_connection.bind('<KeyPress-w>', self.__on_keypress_w)
-        self.__keyboard_connection.bind('<KeyPress-s>', self.__on_keypress_s)
-        self.__keyboard_connection.bind('<KeyPress-a>', self.__on_keypress_a)
-        self.__keyboard_connection.bind('<KeyPress-d>', self.__on_keypress_d)
-        self.__keyboard_connection.bind('<KeyPress-Up>', self.__on_keypress_up)
-        self.__keyboard_connection.bind('<KeyPress-Down>', self.__on_keypress_down)
-        self.__keyboard_connection.bind('<KeyPress-Left>', self.__on_keypress_left)
-        self.__keyboard_connection.bind('<KeyPress-Right>', self.__on_keypress_right)
+        self.__keyboard_connection.bind('<KeyPress-q>', self.on_keypress_q)
+        self.__keyboard_connection.bind('<KeyPress-w>', self.on_keypress_w)
+        self.__keyboard_connection.bind('<KeyPress-s>', self.on_keypress_s)
+        self.__keyboard_connection.bind('<KeyPress-a>', self.on_keypress_a)
+        self.__keyboard_connection.bind('<KeyPress-d>', self.on_keypress_d)
+        self.__keyboard_connection.bind('<KeyPress-Up>', self.on_keypress_up)
+        self.__keyboard_connection.bind('<KeyPress-Down>', self.on_keypress_down)
+        self.__keyboard_connection.bind('<KeyPress-Left>', self.on_keypress_left)
+        self.__keyboard_connection.bind('<KeyPress-Right>', self.on_keypress_right)
         self.__keyboard_connection.pack(side="bottom")
         self.__keyboard_connection.focus_set()
 
         #실행될 스레드 선언
         if hasattr(self.__planner, 'get_info_8889Sensor_tof'):
-            print("실행???")
-            self.__thread_update_tof = threading.Thread(target=self.__func_update_tof, daemon=True)
+            self.__thread_update_tof = threading.Thread(target=self.func_update_tof, daemon=True)
             self.__thread_update_tof.start()
 
         if hasattr(self.__planner, 'get_info_11111Sensor_frame'):
-            self.__thread_print_video = threading.Thread(target=self.__func_print_video, daemon=True)
+            self.__thread_print_video = threading.Thread(target=self.func_print_video, daemon=True)
             self.__thread_print_video.start()
     
 
 
     #=====버튼을 클릭했을 때 실행될 함수들=====
-    def __land(self): #return: Tello의 receive 'OK' or 'FALSE'
-        self.__send_cmd('land')
+    def land(self): #return: Tello의 receive 'OK' or 'FALSE'
+        self.send_cmd('land')
 
-    def __takeoff(self): #return: Tello의 receive 'OK' or 'FALSE'
-         self.__send_cmd('takeoff')
+    def takeoff(self): #return: Tello의 receive 'OK' or 'FALSE'
+         self.send_cmd('takeoff')
 
 
 
     #=====키보드를 입력했을 때 실행될 함수들=====
-    def __on_keypress_q(self, event):
+    def on_keypress_q(self, event):
         self.__printm("Q", "stop")
-        self.__send_cmd("stop")
+        self.send_cmd("stop")
     
     
-    def __on_keypress_w(self, event):
+    def on_keypress_w(self, event):
         self.__printm("W","up")
-        self.__move('up',self.__cm)
+        self.move('up',self.__cm)
 
 
-    def __on_keypress_s(self, event):
+    def on_keypress_s(self, event):
         self.__printm("S","down")
-        self.__move('down',self.__cm)
+        self.move('down',self.__cm)
 
 
-    def __on_keypress_a(self, event):
+    def on_keypress_a(self, event):
         self.__printr("A","CCW")
-        self.__rotate("ccw",self.__degree)
+        self.rotate("ccw",self.__degree)
 
 
-    def __on_keypress_d(self, event):
+    def on_keypress_d(self, event):
         self.__printr("D","CW")
-        self.__rotate("cw",self.__degree)
+        self.rotate("cw",self.__degree)
 
 
-    def __on_keypress_up(self, event):
+    def on_keypress_up(self, event):
         self.__printm("UP","forward")
-        self.__move('forward',self.__cm)
+        self.move('forward',self.__cm)
 
 
-    def __on_keypress_down(self, event):
+    def on_keypress_down(self, event):
         self.__printm("DOWN","back")
-        self.__move('back',self.__cm)
+        self.move('back',self.__cm)
 
 
-    def __on_keypress_left(self, event):
+    def on_keypress_left(self, event):
         self.__printm("LEFT","left")
-        self.__move('left',self.__cm)
+        self.move('left',self.__cm)
 
 
-    def __on_keypress_right(self, event):
+    def on_keypress_right(self, event):
         self.__printm("RIGHT","right")
-        self.__move('right',self.__cm)
+        self.move('right',self.__cm)
 
 
-    def __move(self, direction, distance): 
+    def move(self, direction, distance): 
         """
         direction: up, down, forward, back, right, left
         distance: 20~500 cm
         """
-        self.__send_cmd("{} {}".format(direction, distance))
+        self.send_cmd("{} {}".format(direction, distance))
     
     
-    def __rotate(self, direction, degree):
+    def rotate(self, direction, degree):
         """
         direction: ccw, cw
         degree: 0~360 degree
         """
-        self.__send_cmd("{} {}".format(direction, degree))
+        self.send_cmd("{} {}".format(direction, degree))
 
 
 
     #=====스레드에서 실행될 함수=====
     #Tello에게서 0.3초 간격으로 ToF값을 받아와 GUI를 갱신하는 함수
-    def __func_update_tof(self):
+    def func_update_tof(self):
         self.__printf("실행",sys._getframe().f_code.co_name)
         try:
             while not self.__thread_stop_event.is_set():
@@ -186,7 +185,7 @@ class TelloVirtualController:
 
 
     #객체인식 화면을 출력하는 함수
-    def __func_print_video(self):
+    def func_print_video(self):
         self.__printf("실행",sys._getframe().f_code.co_name)
         try:
             while not self.__thread_stop_event.is_set():
@@ -213,7 +212,7 @@ class TelloVirtualController:
 
 
     #=====Tello에게 보낼 명령을 controller queue에 저장하는 함수=====
-    def __send_cmd(self, msg:str):
+    def send_cmd(self, msg:str):
         # self.__lock.acquire() #락 획득
         try:
             self.insert_controller_queue(msg)
@@ -231,7 +230,7 @@ class TelloVirtualController:
     
 
     #=====종료버튼을 클릭시 실행할 함수=====
-    def __onClose(self):
+    def onClose(self):
         self.__socket8889.sendto("land".encode('utf-8'), self.__tello_address)
         sleep(0.5)
         self.__socket8889.sendto("motoroff".encode('utf-8'), self.__tello_address)
@@ -251,11 +250,6 @@ class TelloVirtualController:
         
         #현 스레드 종료
         exit()
-        
-        
-    def onClose(self):
-        self.__onClose()
-
 
 
     #=====실행내역 출력을 위한 함수=====

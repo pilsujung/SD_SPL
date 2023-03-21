@@ -37,7 +37,7 @@ from CAD.Test.TelloVirtualController import TelloVirtualController
 class Main:
     
     def __init__(self):
-        print("********************CAD MODE: 장애물을 인지하고 회피기동을 합니다********************")
+        print("********************CAMERA MODE: 영상을 출력합니다********************")
         print(">>> 프로그램 준비중...")
         #종료를 위한 stop_event
         self.stop_event = threading.Event()

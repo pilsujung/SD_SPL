@@ -24,7 +24,7 @@ class Planner:
         self.__printc("생성")
         
         #종료를 위한 stop_event
-        self.__stop_event = main.stop_event
+        self.stop_event = main.stop_event
         
         #8889 소켓 & Tello address
         self.socket8889 = main.socket8889
@@ -51,7 +51,10 @@ class Planner:
         self.__info_11111Sensor_coor = None
         
         #객체감지를 위한 YOLOv5 객체
-        self.__YOLOv5 = YOLOv5()
+        if not hasattr(self.__main, "test"):
+            self.__YOLOv5 = YOLOv5()
+        else:
+            self.__YOLOv5 = "TEST"
                 
         
         #스레드 실행
@@ -73,13 +76,13 @@ class Planner:
         self.__printf("실행",sys._getframe().f_code.co_name)
         
         try:
-            while not self.__stop_event.is_set() and not hasattr(self.__main, 'virtual_controller'):
+            while not self.stop_event.is_set() and not hasattr(self.__main, 'virtual_controller'):
                 self.__printf("대기중",sys._getframe().f_code.co_name)
                 sleep(1)
                 
             self.__virtual_controller = self.__main.virtual_controller
                 
-            while not self.__stop_event.is_set():
+            while not self.stop_event.is_set():
                 #1) frame 정보가 존재하면, frame에 대해 장애물 윈도우를 그리기
                 frame, tof, object_coor =  self.__redraw_frame() #좌표받아오기
                 
@@ -124,7 +127,7 @@ class Planner:
         이를 방지하기 위해 5초 간격으로 Tello에게 "command" 명령을 전송
         """
         try:
-            while not self.__stop_event.is_set():
+            while not self.stop_event.is_set():
                 self.socket8889.sendto("command".encode(),self.tello_address)
                 sleep(5)
 
@@ -148,7 +151,7 @@ class Planner:
         Tello에게 0.2초 주기로 tof값 전송을 요청하는 스레드
         """
         try:
-            while not self.__stop_event.is_set():
+            while not self.stop_event.is_set():
                 # self.insert_cmd_queue('EXT tof?')
                 self.socket8889.sendto("EXT tof?".encode(),self.tello_address)
                 sleep(0.2)
@@ -171,7 +174,7 @@ class Planner:
         frame = self.get_info_11111Sensor_frame()
         tof = self.get_info_8889Sensor_tof()
         
-        if frame is not None and frame.size != 0:     
+        if frame is not None and type(frame)!=str and type(self.__YOLOv5)!=str and frame.size != 0:     
             #YOLO에 frame을 전달하여, 객체인식이 적용된 이미지를 전달받음
             image, object_coor = self.__YOLOv5.detect_from_frame(frame, tof)
             
