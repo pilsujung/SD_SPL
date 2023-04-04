@@ -33,9 +33,9 @@ class TestMain(unittest.TestCase):
         self.assertIsNotNone(main.tello8889sensor)
         self.assertIsNotNone(main.tello8889actor)
         self.assertIsInstance(main.virtual_controller, TelloVirtualController)
-
-
-
+        
+        
+        
 #===========================================================================================================
 class TestActor_(Actor):
     def __init__(self):
@@ -59,7 +59,7 @@ class TestActor(unittest.TestCase):
         self.test_actor = TestActor_()
 
     #test_take_cmd_from_planner
-    def test_TID2002(self):
+    def test_TID1002(self):
         mock_planner = MagicMock()
         mock_planner.get_command.return_value = 'example_command'
 
@@ -68,22 +68,22 @@ class TestActor(unittest.TestCase):
         self.assertEqual(self.test_actor.command, 'example_command')
 
     #test_change_cmd_is_safe
-    def test_TID2003(self):
+    def test_TID1003(self):
         safe_cmd = self.test_actor.change_cmd_is_safe('example_command')
         self.assertEqual(safe_cmd, 'safe_example_command')
 
     #test_change_cmd_for_drone
-    def test_TID2004(self):
+    def test_TID1004(self):
         drone_cmd = self.test_actor.change_cmd_for_drone('example_command')
         self.assertEqual(drone_cmd, 'drone_example_command')
 
     #test_send_to_actuator
-    def test_TID2005(self):
+    def test_TID1005(self):
         sent_cmd = self.test_actor.send_to_actuator('example_command')
         self.assertEqual(sent_cmd, 'sent_example_command')
                 
             
-        
+                
 #===========================================================================================================         
 class TestSensor_(Sensor):
     def __init__(self):
@@ -107,25 +107,25 @@ class TestSensor(unittest.TestCase):
         self.test_sensor = TestSensor_()
         
     #test_take_data_from_sensor
-    def test_TID2006(self):
+    def test_TID1006(self):
         data = self.test_sensor.take_data_from_sensor('example_data')
         self.assertEqual(data, 'example_data')
         self.assertEqual(self.test_sensor.data, 'example_data')
         
     #test_change_data_to_info
-    def test_TID2007(self):
+    def test_TID1007(self):
         info = self.test_sensor.change_data_to_info('example_data')
         self.assertEqual(info, 'info_example_data')
         
     #test_save_to_planner
-    def test_TID2008(self):
+    def test_TID1008(self):
         mock_planner = MagicMock()
         info = 'info_example_data'
         result = self.test_sensor.save_to_planner(mock_planner, info)
         self.assertTrue(result)
         mock_planner.save_info.assert_called_once_with(info)
 
-
+   
             
 #===========================================================================================================   
 class TestTello8889Actor(unittest.TestCase):
@@ -138,28 +138,28 @@ class TestTello8889Actor(unittest.TestCase):
         self.tello_actor = Tello8889Actor(self.main_mock)
         
     #test_take_cmd_from_planner
-    def test_TID2009(self):
+    def test_TID1009(self):
         self.main_mock.planner.pop_cmd_queue.return_value = 'command'
         cmd = self.tello_actor.take_cmd_from_planner()
         self.assertEqual(cmd, 'command')
         
     #test_change_cmd_is_safe
-    def test_TID2010(self):
+    def test_TID1010(self):
         self.main_mock.planner.get_info_8889Sensor_tof.return_value = 100
         safe_cmd = self.tello_actor.change_cmd_is_safe('forward 10')
         self.assertEqual(safe_cmd, 'forward 40')
 
     #test_change_cmd_for_drone
-    def test_TID2011(self):
+    def test_TID1011(self):
         drone_cmd = self.tello_actor.change_cmd_for_drone('forward 10')
         self.assertEqual(drone_cmd, b'rc 0 60 0 0')
 
     #test_send_to_actuator
-    def test_TID2012(self):
+    def test_TID1012(self):
         self.tello_actor.send_to_actuator("command".encode('utf-8'))
         self.main_mock.socket8889.sendto.assert_called_once_with("command".encode('utf-8'), self.main_mock.tello_address)      
 
-         
+      
 
 #===========================================================================================================   
 class TestTello8889Sensor(unittest.TestCase):
@@ -176,18 +176,18 @@ class TestTello8889Sensor(unittest.TestCase):
         self.tello_sensor._Tello8889Sensor__thr_sensor.join()
         
     #test_take_data_from_sensor
-    def test_TID2013(self):
+    def test_TID1013(self):
         self.main_mock.socket8889.recv.return_value = b'tof 100'
         data = self.tello_sensor.take_data_from_sensor()
         self.assertEqual(data, b'tof 100')
 
     #test_change_data_to_info
-    def test_TID2014(self):
+    def test_TID1014(self):
         info = self.tello_sensor.change_data_to_info(b'tof 100')
         self.assertEqual(info, 'tof 100')
 
     #test_save_to_planner
-    def test_TID2015(self):
+    def test_TID1015(self):
         self.tello_sensor.save_to_planner('tof 100')
         self.main_mock.planner.set_info_8889Sensor_tof.assert_called_once_with(10)            
  
@@ -204,7 +204,7 @@ class TestTelloVirtualController(unittest.TestCase):
         self.main_mock.stop_event = threading.Event()
         self.controller = TelloVirtualController(self.main_mock)
 
-    def test_TID2016(self):
+    def test_TID1016(self):
         self.assertIsNotNone(getattr(self.controller, '_TelloVirtualController__socket8889'))
         self.assertIsNotNone(getattr(self.controller, '_TelloVirtualController__tello_address'))
         self.assertIsNotNone(getattr(self.controller, '_TelloVirtualController__planner'))
@@ -223,32 +223,32 @@ class TestTelloVirtualController(unittest.TestCase):
         self.assertIsNotNone(getattr(self.controller, '_TelloVirtualController__thread_print_video'))
     
     #test_land
-    def test_TID2017(self):
+    def test_TID1017(self):
         with patch.object(self.controller, 'send_cmd') as mock_send_cmd:
             self.controller.land()
             mock_send_cmd.assert_called_once_with('land')
     
     #test_on_keypress_q
-    def test_TID2018(self):
+    def test_TID1018(self):
         with patch.object(self.controller, 'send_cmd') as mock_send_cmd:
             self.controller.on_keypress_q(None)
             mock_send_cmd.assert_called_once_with('stop')
     
     #test_insert_controller_queue
-    def test_TID2019(self):
+    def test_TID1019(self):
             mock_cmd = "test_command"
             self.controller.insert_controller_queue(mock_cmd)
             self.controller._TelloVirtualController__planner.insert_cmd_queue.assert_called_with(mock_cmd)
     
     #test_send_cmd
-    def test_TID2020(self):
+    def test_TID1020(self):
         with patch.object(self.controller, 'insert_controller_queue') as mock_insert_controller_queue:
             self.controller.send_cmd('test_cmd')
             mock_insert_controller_queue.assert_any_call('test_cmd')
             mock_insert_controller_queue.assert_any_call('stop')
 
 
-  
+
 #===========================================================================================================                     
 class TestPlanner(unittest.TestCase):
     
@@ -260,7 +260,7 @@ class TestPlanner(unittest.TestCase):
         self.main_mock.socket8889 = MagicMock()
         self.planner = Planner(self.main_mock)
         
-    def test_TID2021(self):
+    def test_TID2002(self):
         self.assertIsNotNone(self.planner)
         self.assertEqual(self.planner.stop_event, self.main_mock.stop_event)
         self.assertEqual(self.planner.socket8889, self.main_mock.socket8889)
@@ -273,16 +273,16 @@ class TestPlanner(unittest.TestCase):
         self.assertIsNone(self.planner._Planner__info_8889Sensor_cmd)
         self.assertTrue(self.planner._Planner__thr_stay_connection.is_alive())
         self.assertTrue(self.planner._Planner__thr_requset_tof.is_alive())
-
+    
     #test_pop_cmd_queue
-    def test_TID2022(self):
+    def test_TID1022(self):
         self.assertIsNone(self.planner.pop_cmd_queue())
         self.planner._Planner__cmd_queue = ['command1', 'command2']
         self.assertEqual(self.planner.pop_cmd_queue(), 'command1')
         self.assertEqual(self.planner._Planner__cmd_queue, ['command2'])
-        
+
     #test_insert_cmd_queue
-    def test_TID2023(self):
+    def test_TID1023(self):
         self.planner._Planner__cmd_queue = []
         self.planner.insert_cmd_queue('command1')
         self.assertEqual(self.planner._Planner__cmd_queue, ['command1'])
@@ -290,36 +290,36 @@ class TestPlanner(unittest.TestCase):
         self.assertEqual(self.planner._Planner__cmd_queue, ['command1', 'command2'])
         
     #test_get_info_8889Sensor_tof
-    def test_TID2024(self):
+    def test_TID2003(self):
         self.assertIsNone(self.planner.get_info_8889Sensor_tof())
         self.planner.set_info_8889Sensor_tof(100)
         self.assertEqual(self.planner.get_info_8889Sensor_tof(), 100)
 
     #test_set_info_8889Sensor_tof
-    def test_TID2025(self):
+    def test_TID2004(self):
         self.assertIsNone(self.planner.get_info_8889Sensor_tof())
         self.planner.set_info_8889Sensor_tof(100)
         self.assertEqual(self.planner._Planner__info_8889Sensor_tof, 100)        
-
+        
     #test_get_info_8889Sensor_cmd
-    def test_TID2026(self):
+    def test_TID1024(self):
         self.assertIsNone(self.planner.get_info_8889Sensor_cmd())
         self.planner._Planner__info_8889Sensor_cmd = 'ready'
         self.assertEqual(self.planner.get_info_8889Sensor_cmd(), 'ready')
 
     #test_set_info_8889Sensor_cmd
-    def test_TID2027(self):
+    def test_TID1025(self):
         self.assertIsNone(self.planner._Planner__info_8889Sensor_cmd)
         self.planner.set_info_8889Sensor_cmd('ready')
         self.assertEqual(self.planner._Planner__info_8889Sensor_cmd, 'ready')
 
         
-
+        
 #===========================================================================================================  
 class TestCheckValues(unittest.TestCase):
     
     #test_is_tof_val
-    def test_TID2028(self):
+    def test_TID1026(self):
         # Test for valid tof value
         valid_tof_val = "tof 500"
         self.assertTrue(is_tof_val(valid_tof_val))
@@ -341,7 +341,7 @@ class TestCheckValues(unittest.TestCase):
         self.assertFalse(is_tof_val(non_tof_val))
 
     #test_is_sdk_val
-    def test_TID2029(self):
+    def test_TID1027(self):
         # Test for valid SDK value
         valid_sdk_val = "command"
         self.assertTrue(is_sdk_val(valid_sdk_val))
@@ -352,7 +352,7 @@ class TestCheckValues(unittest.TestCase):
 class TestChangeValues(unittest.TestCase):
     
     #test_change_mm_to_cm
-    def test_TID2030(self):
+    def test_TID1028(self):
         self.assertEqual(change_mm_to_cm(0), 0)
         self.assertEqual(change_mm_to_cm(5), 0)
         self.assertEqual(change_mm_to_cm(10), 1)
@@ -362,13 +362,13 @@ class TestChangeValues(unittest.TestCase):
         self.assertEqual(change_mm_to_cm(12345), 1234)
     
     #test_change_val_to_coor
-    def test_TID2031(self):
+    def test_TID1029(self):
         object_val3 = (None, ((0, 0), (100, 100)), (640, 480))
         expected_output3 = None
         self.assertEqual(change_val_to_coor(object_val3), expected_output3)
         
     #test_change_cmd_for_tello
-    def test_TID2032(self):
+    def test_TID1030(self):
         cmd1 = "left 100"
         expected_output2 = b'rc -100 0 0 0'
         self.assertEqual(change_cmd_for_tello(cmd1), expected_output2)
@@ -390,7 +390,7 @@ class TestChangeValues(unittest.TestCase):
         self.assertEqual(change_cmd_for_tello(cmd5), expected_output6)
 
     #test_change_windows_to_window
-    def test_TID2033(self):
+    def test_TID1031(self):
         window_list1 = [((100, 100), (200, 200))]
         ir_left_up_coor1 = (150, 150)
         ir_right_down_coor1 = (250, 250)
@@ -410,7 +410,7 @@ class TestChangeValues(unittest.TestCase):
         self.assertEqual(change_windows_to_window(window_list3, ir_left_up_coor5, ir_right_down_coor5), expected_output5)
     
     #test_forward_cmd
-    def test_TID2034(self):
+    def test_TID1032(self):
         cmd1 = "forward 30"
         tof1 = 150
         threshold1 = 50
@@ -434,9 +434,170 @@ class TestChangeValues(unittest.TestCase):
         threshold4 = 50
         expected4 = "turn_left 30"
         self.assertEqual(change_to_safe_cmd(cmd4, tof4, threshold4), expected4)
-  
 
 
+
+#===========================================================================================================                     
+class TestScenario_control(unittest.TestCase):
+    
+    def setUp(self):
+        self.__cmd_queue = [] #명령을 저장할 큐
+        
+    def on_keypress_test(self, test_key, test_direction):
+        print(test_key,test_direction)
+        self.move(test_direction,50)
+    
+    def takeoff(self): #return: Tello의 receive 'OK' or 'FALSE'
+         self.send_cmd('takeoff')
+    
+    def land(self): #return: Tello의 receive 'OK' or 'FALSE'
+        self.send_cmd('land')
+        
+    def move(self, direction, distance): 
+        """
+        direction: up, down, forward, back, right, left
+        distance: 20~500 cm
+        """
+        self.send_cmd("{} {}".format(direction, distance))
+
+    def send_cmd(self, msg:str):
+        # self.__lock.acquire() #락 획득
+        try:
+            self.insert_controller_queue(msg)
+            self.insert_controller_queue("stop")
+
+        except Exception as e:
+            print("ERROR {}".format(e),sys._getframe().f_code.co_name)
+        # self.__lock.release() #락 해제
+    
+    def insert_controller_queue(self,cmd):
+        self.insert_cmd_queue(cmd)
+    
+    def insert_cmd_queue(self, info):
+        # self.__lock_cmd_queue.acquire()
+        self.__cmd_queue.append(info)
+        # self.__lock_cmd_queue.release()
+    
+    def pop_cmd_queue(self):
+        # self.__lock_cmd_queue.acquire()
+        data = None
+        if len(self.__cmd_queue)>0:
+            data = self.__cmd_queue.pop(0)
+        return data
+
+    def take_cmd_from_planner(self): 
+        """
+        Planner로부터 cmd를 가져온다
+        """
+        cmd = self.pop_cmd_queue()
+        return cmd
+    
+    def test_TID1033(self):
+        self.on_keypress_test('w', 'up')
+        cmd = self.take_cmd_from_planner()
+        self.assertEqual('up 50',cmd)
+    
+    def test_TID1034(self):
+        self.on_keypress_test('a', 'ccw')
+        cmd = self.take_cmd_from_planner()
+        self.assertEqual('ccw 50',cmd)
+    
+    def test_TID1035(self):
+        self.on_keypress_test('d', 'cw')
+        cmd = self.take_cmd_from_planner()
+        self.assertEqual('cw 50',cmd)
+    
+    def test_TID1036(self):
+        self.on_keypress_test('s', 'down')
+        cmd = self.take_cmd_from_planner()
+        self.assertEqual('down 50',cmd)
+    
+    def test_TID1037(self):
+        self.takeoff()
+        cmd = self.take_cmd_from_planner()
+        self.assertEqual('takeoff',cmd)
+    
+    def test_TID1038(self):
+        self.land()
+        cmd = self.take_cmd_from_planner()
+        self.assertEqual('land',cmd)
+
+
+
+#===========================================================================================================                     
+class TestScenario_tof(unittest.TestCase):
+    def setUp(self):
+        self.__info_8889Sensor_tof = None
+        self.__info_8889Sensor_cmd = None
+
+        
+    def take_data_from_sensor(self, data): 
+        """
+        센서로부터 data를 가져온다
+        """
+        return data
+
+    def change_data_to_info(self, data: bytes):
+        """
+        data를 Planner가 이해할 수 있는 info로 변경한다
+        """
+        info:str = data.decode('utf-8')
+        return info
+    
+    def save_to_planner(self, info: str):
+        """
+        info를 Planner에 저장한다
+        """
+        if is_tof_val(info):
+            #ToF 값은 "tof 100" 형태로 들어온다
+            info = change_mm_to_cm(int(info.split()[-1]))
+            if info > 60:
+                info = 1000
+            self.set_info_8889Sensor_tof(info)
+        
+        else: #cmd return 값이면
+            self.set_info_8889Sensor_cmd(info)
+            print("[Tello8889Sensor]",info)
+    
+    def set_info_8889Sensor_cmd(self, info):
+        # self.__lock_info_8889Sensor_cmd.acquire()
+        self.__info_8889Sensor_cmd = info
+        # self.__lock_info_8889Sensor_cmd.release()
+    
+    def set_info_8889Sensor_tof(self, info):
+        # self.__lock_info_8889Sensor_tof.acquire()
+        self.__info_8889Sensor_tof = info
+        # self.__lock_info_8889Sensor_tof.release()
+        
+    def get_info_8889Sensor_tof(self):
+        # self.__lock_info_8889Sensor_tof.acquire()
+        info = self.__info_8889Sensor_tof
+        # self.__lock_info_8889Sensor_tof.release()
+        return info
+    
+    def test_TID2005(self):
+        data = self.take_data_from_sensor(b'tof 500')
+        info = self.change_data_to_info(data)
+        self.save_to_planner(info)
+        tof = self.get_info_8889Sensor_tof()
+        self.assertEqual(50, tof)
+    
+    def test_TID2006(self):
+        data = self.take_data_from_sensor(b'tof 1000')
+        info = self.change_data_to_info(data)
+        self.save_to_planner(info)
+        tof = self.get_info_8889Sensor_tof()
+        self.assertEqual(1000, tof)
+    
+    def test_TID2007(self):
+        data = self.take_data_from_sensor(b'tof 2000')
+        info = self.change_data_to_info(data)
+        self.save_to_planner(info)
+        tof = self.get_info_8889Sensor_tof()
+        self.assertEqual(1000, tof)
+        
+        
+    
 #===========================================================================================================                     
 if __name__ == "__main__":
     unittest.main()

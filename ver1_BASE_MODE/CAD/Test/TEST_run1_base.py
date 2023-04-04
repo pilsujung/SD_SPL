@@ -424,5 +424,92 @@ class TestChangeValues(unittest.TestCase):
 
 
 #===========================================================================================================                     
+class TestScenario_control(unittest.TestCase):
+    
+    def setUp(self):
+        self.__cmd_queue = [] #명령을 저장할 큐
+        
+    def on_keypress_test(self, test_key, test_direction):
+        print(test_key,test_direction)
+        self.move(test_direction,50)
+    
+    def takeoff(self): #return: Tello의 receive 'OK' or 'FALSE'
+         self.send_cmd('takeoff')
+    
+    def land(self): #return: Tello의 receive 'OK' or 'FALSE'
+        self.send_cmd('land')
+        
+    def move(self, direction, distance): 
+        """
+        direction: up, down, forward, back, right, left
+        distance: 20~500 cm
+        """
+        self.send_cmd("{} {}".format(direction, distance))
+
+    def send_cmd(self, msg:str):
+        # self.__lock.acquire() #락 획득
+        try:
+            self.insert_controller_queue(msg)
+            self.insert_controller_queue("stop")
+
+        except Exception as e:
+            print("ERROR {}".format(e),sys._getframe().f_code.co_name)
+        # self.__lock.release() #락 해제
+    
+    def insert_controller_queue(self,cmd):
+        self.insert_cmd_queue(cmd)
+    
+    def insert_cmd_queue(self, info):
+        # self.__lock_cmd_queue.acquire()
+        self.__cmd_queue.append(info)
+        # self.__lock_cmd_queue.release()
+    
+    def pop_cmd_queue(self):
+        # self.__lock_cmd_queue.acquire()
+        data = None
+        if len(self.__cmd_queue)>0:
+            data = self.__cmd_queue.pop(0)
+        return data
+
+    def take_cmd_from_planner(self): 
+        """
+        Planner로부터 cmd를 가져온다
+        """
+        cmd = self.pop_cmd_queue()
+        return cmd
+    
+    def test_TID1033(self):
+        self.on_keypress_test('w', 'up')
+        cmd = self.take_cmd_from_planner()
+        self.assertEqual('up 50',cmd)
+    
+    def test_TID1034(self):
+        self.on_keypress_test('a', 'ccw')
+        cmd = self.take_cmd_from_planner()
+        self.assertEqual('ccw 50',cmd)
+    
+    def test_TID1035(self):
+        self.on_keypress_test('d', 'cw')
+        cmd = self.take_cmd_from_planner()
+        self.assertEqual('cw 50',cmd)
+    
+    def test_TID1036(self):
+        self.on_keypress_test('s', 'down')
+        cmd = self.take_cmd_from_planner()
+        self.assertEqual('down 50',cmd)
+    
+    def test_TID1037(self):
+        self.takeoff()
+        cmd = self.take_cmd_from_planner()
+        self.assertEqual('takeoff',cmd)
+    
+    def test_TID1038(self):
+        self.land()
+        cmd = self.take_cmd_from_planner()
+        self.assertEqual('land',cmd)
+        
+        
+
+#===========================================================================================================                     
 if __name__ == "__main__":
     unittest.main()
