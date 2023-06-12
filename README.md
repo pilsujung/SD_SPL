@@ -1,5 +1,4 @@
 # SD_SPL
-2022_SoftwareDevelopment에서 생성한 CAD 시스템 확장
 
 <img width="100%" src="https://user-images.githubusercontent.com/62317686/231989760-c2b364e3-8092-4640-969a-ef6dec26196a.JPG"/>
 <img width="100%" src="https://user-images.githubusercontent.com/62317686/231989764-d8ab622b-60f7-4ec4-b1aa-34d77fd19f30.JPG"/>
